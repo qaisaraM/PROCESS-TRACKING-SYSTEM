@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PE Machine Tracking System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #0f172a;
+    --border: #1e293b;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --faint: #334155;
+    --purple: #6366f1;
+    --purple-light: #818cf8;
+    --green: #22c55e;
+    --green-light: #4ade80;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --blue: #38bdf8;
+    --pink: #f472b6;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 24px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute;
+    top: -120px; left: 50%; transform: translateX(-50%);
+    width: 700px; height: 400px;
+    background: radial-gradient(ellipse, rgba(99,102,241,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .badge-row {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    justify-content: center; margin-bottom: 32px;
+    position: relative;
+  }
+
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid;
+    letter-spacing: 0.03em;
+    transition: opacity 0.2s;
+  }
+
+  .badge:hover { opacity: 0.75; }
+  .b-blue   { background: #1e3a5f; color: #7dd3fc; border-color: rgba(37,99,235,0.3); }
+  .b-green  { background: #14291a; color: #86efac; border-color: rgba(22,163,74,0.3); }
+  .b-purple { background: #2e1a4a; color: #c4b5fd; border-color: rgba(124,58,237,0.3); }
+  .b-amber  { background: #2d1f00; color: #fcd34d; border-color: rgba(217,119,6,0.3); }
+  .b-red    { background: #2d0f0f; color: #fca5a5; border-color: rgba(220,38,38,0.3); }
+  .b-teal   { background: #012d22; color: #5eead4; border-color: rgba(20,184,166,0.3); }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--purple);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    position: relative;
+  }
+
+  h1 {
+    font-size: clamp(42px, 7vw, 80px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 10px;
+    position: relative;
+  }
+
+  h1 .accent { color: var(--purple); }
+
+  .tagline {
+    font-size: clamp(15px, 2vw, 18px);
+    color: var(--muted);
+    max-width: 540px;
+    margin: 0 auto 40px;
+    line-height: 1.7;
+    position: relative;
+  }
+
+  .cta-row {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 64px;
+  }
+
+  .btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    transition: all 0.15s;
+    border: 1px solid;
+  }
+
+  .btn-primary {
+    background: var(--purple);
+    color: #fff;
+    border-color: var(--purple);
+  }
+
+  .btn-primary:hover { background: #4f46e5; }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border-color: var(--border);
+  }
+
+  .btn-secondary:hover { border-color: var(--purple); color: var(--purple-light); }
+
+  .scroll-hint {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--faint);
+    position: relative;
+    animation: bounce 2s infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(6px); }
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 80px 24px;
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--purple);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  h2 {
+    font-size: clamp(26px, 4vw, 38px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+
+  .section-intro {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 600px;
+    line-height: 1.7;
+    margin-bottom: 40px;
+  }
+
+  /* ── PROBLEM / SOLUTION ── */
+  .ps-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  @media (max-width: 640px) { .ps-grid { grid-template-columns: 1fr; } }
+
+  .ps-card {
+    border-radius: 12px;
+    padding: 24px 28px;
+    border: 1px solid;
+  }
+
+  .ps-card.problem {
+    background: #160808;
+    border-color: rgba(239,68,68,0.2);
+    border-left: 3px solid var(--red);
+  }
+
+  .ps-card.solution {
+    background: #051209;
+    border-color: rgba(34,197,94,0.2);
+    border-left: 3px solid var(--green);
+  }
+
+  .ps-card h3 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .ps-card.problem h3 { color: #fca5a5; }
+  .ps-card.solution h3 { color: #86efac; }
+
+  .ps-card p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .ps-card ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .ps-card ul li {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 4px 0 4px 18px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .ps-card.problem ul li::before { content: '✗'; position: absolute; left: 0; color: var(--red); }
+  .ps-card.solution ul li::before { content: '✓'; position: absolute; left: 0; color: var(--green); }
+
+  /* ── WIP BOARD ── */
+  .wip-container {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 32px 0;
+  }
+
+  .wip-topbar {
+    background: var(--surface);
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .wip-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  .wip-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: 8px;
+  }
+
+  .wip-scroll { overflow-x: auto; }
+
+  table.wip {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 720px;
+  }
+
+  table.wip thead th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 12px 10px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    font-weight: 700;
+  }
+
+  table.wip thead th.hl { color: var(--purple-light); background: rgba(99,102,241,0.06); }
+
+  table.wip tbody td {
+    padding: 8px 6px;
+    text-align: center;
+    border-right: 1px solid rgba(30,41,59,0.5);
+    vertical-align: middle;
+  }
+
+  table.wip tbody td:last-child { border-right: none; }
+  table.wip tbody tr { border-bottom: 1px solid rgba(30,41,59,0.3); }
+  table.wip tbody tr:last-child { border-bottom: none; }
+
+  .pill {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+
+  .pill-pending  { background: #1a2234; color: #94a3b8; border-color: #1e293b; }
+  .pill-waiting  { background: #291700; color: #fbbf24; border-color: rgba(217,119,6,0.5); }
+  .pill-active   { background: #1a1840; color: #a5b4fc; border-color: rgba(79,70,229,0.5); }
+  .pill-done     { background: #051209; color: #4ade80; border-color: rgba(34,197,94,0.5); }
+
+  .wip-legend {
+    display: flex; gap: 20px; flex-wrap: wrap;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 12px 20px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .leg-item { display: flex; align-items: center; gap: 6px; color: var(--muted); }
+  .leg-dot  { width: 8px; height: 8px; border-radius: 2px; }
+
+  /* ── FEATURE GRID ── */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 32px 0;
+  }
+
+  .feat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: border-color 0.2s, transform 0.15s;
+    cursor: default;
+  }
+
+  .feat:hover { border-color: rgba(99,102,241,0.4); transform: translateY(-2px); }
+
+  .feat-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    margin-bottom: 14px;
+  }
+
+  .feat h3 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .feat p  { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* ── FLOW ── */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 32px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .flow-step {
+    display: flex;
+    gap: 20px;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+
+  .flow-step:last-child { border-bottom: none; }
+
+  .step-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: rgba(99,102,241,0.12);
+    border: 1px solid rgba(99,102,241,0.4);
+    color: var(--purple-light);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .step-body h4 { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .step-body p  { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  .flow-branch {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 0 24px 16px;
+    padding-top: 12px;
+  }
+
+  @media (max-width: 600px) { .flow-branch { grid-template-columns: 1fr; } }
+
+  .branch {
+    border-radius: 10px;
+    padding: 16px 18px;
+    border: 1px solid;
+  }
+
+  .branch.s1 { background: #051209; border-color: rgba(34,197,94,0.25); }
+  .branch.s2 { background: #0c0c2a; border-color: rgba(99,102,241,0.25); }
+
+  .branch h5 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .branch.s1 h5 { color: var(--green-light); }
+  .branch.s2 h5 { color: var(--purple-light); }
+
+  .branch ul { list-style: none; padding: 0; }
+  .branch ul li {
+    font-size: 12px;
+    color: var(--muted);
+    padding: 3px 0 3px 14px;
+    position: relative;
+  }
+
+  .branch.s1 ul li::before { content: '›'; position: absolute; left: 0; color: var(--green); }
+  .branch.s2 ul li::before { content: '›'; position: absolute; left: 0; color: var(--purple); }
+
+  /* ── ARCH TREE ── */
+  .tree {
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 2;
+    overflow-x: auto;
+  }
+
+  .t-dir  { color: #38bdf8; }
+  .t-key  { color: #818cf8; font-weight: 700; }
+  .t-file { color: #94a3b8; }
+  .t-cmt  { color: #1e3a5f; }
+
+  /* ── TECH STACK ── */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin: 32px 0;
+  }
+
+  .tech {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+
+  .tech .layer {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .tech .name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .tech .role { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+  /* ── CONFIG CODE ── */
+  .code-block {
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.9;
+    overflow-x: auto;
+    margin: 24px 0;
+  }
+
+  .kw   { color: #f472b6; }
+  .cls  { color: #34d399; }
+  .str  { color: #fbbf24; }
+  .cmt  { color: #1e3a5f; }
+  .num  { color: #a78bfa; }
+  .attr { color: #38bdf8; }
+
+  /* ── INSIGHTS ── */
+  .insights {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 32px 0;
+  }
+
+  .insight {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .ins-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+
+  .insight h4 { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+  .insight p  { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 32px 0;
+  }
+
+  @media (max-width: 500px) { .stats-row { grid-template-columns: 1fr; } }
+
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+  }
+
+  .stat .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat .lbl { font-size: 12px; color: var(--muted); }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-brand {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--purple);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 8px;
+  }
+
+  .nav-links a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+  }
+
+  .nav-links a:hover { color: var(--text); border-color: var(--border); }
+
+  @media (max-width: 600px) { .nav-links { display: none; } }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 24px;
+    text-align: center;
+  }
+
+  footer p { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--faint); line-height: 2; }
+  footer .hi { color: var(--purple); }
+
+  /* ── DIVIDER ── */
+  .divider { border: none; border-top: 1px solid var(--border); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em;
+    background: rgba(99,102,241,0.1);
+    color: var(--purple-light);
+    padding: 2px 7px;
+    border-radius: 5px;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="#">PE Machine Tracking</a>
+  <div class="nav-links">
+    <a href="#overview">Overview</a>
+    <a href="#features">Features</a>
+    <a href="#flow">Scan Flow</a>
+    <a href="#arch">Architecture</a>
+    <a href="#config">Config</a>
+    <a href="#learned">Learnings</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="badge-row">
+    <span class="badge b-blue">Python 3.11+</span>
+    <span class="badge b-green">PySide6</span>
+    <span class="badge b-purple">OpenCV</span>
+    <span class="badge b-amber">openpyxl</span>
+    <span class="badge b-red">ReportLab</span>
+    <span class="badge b-teal">Production</span>
+  </div>
+  <div class="eyebrow">// shop-floor operations system</div>
+  <h1>PE Machine<br><span class="accent">Tracking</span></h1>
+  <p class="tagline">Production-grade desktop WIP tracker for CNC machining. Jobs scanned in, routed automatically, supervisors see everything live.</p>
+  <div class="cta-row">
+    <a href="https://github.com/yourusername/pe-machine-tracking" class="btn btn-primary">View on GitHub</a>
+    <a href="#overview" class="btn btn-secondary">Read the docs</a>
+  </div>
+  <div class="scroll-hint">↓ scroll to explore</div>
+</div>
+
+<!-- ── OVERVIEW ── -->
+<section id="overview">
+  <div class="section-label">the problem</div>
+  <h2>Before & After</h2>
+  <p class="section-intro">A machining shop with 8 process stations and dozens of concurrent jobs. Paper travelers, no visibility, manual tracking.</p>
+
+  <div class="ps-grid">
+    <div class="ps-card problem">
+      <h3>Before this system</h3>
+      <ul>
+        <li>Paper travelers get lost or misfiled</li>
+        <li>No visibility into bottlenecks until too late</li>
+        <li>Supervisors walking the floor to find job status</li>
+        <li>No historical data for capacity planning</li>
+        <li>Manual Time Start / End entry, prone to errors</li>
+      </ul>
+    </div>
+    <div class="ps-card solution">
+      <h3>After: one scan changes everything</h3>
+      <ul>
+        <li>Scan once at the machine — job tracked instantly</li>
+        <li>WIP board shows every job's current station live</li>
+        <li>Automatic routing to next planned process</li>
+        <li>Full history with timestamps per job per station</li>
+        <li>PDF travel sheet generated on demand</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat">
+      <div class="val" style="color: #818cf8;">8</div>
+      <div class="lbl">machining stations</div>
+    </div>
+    <div class="stat">
+      <div class="val" style="color: #4ade80;">1</div>
+      <div class="lbl">scan to track a job</div>
+    </div>
+    <div class="stat">
+      <div class="val" style="color: #fbbf24;">0</div>
+      <div class="lbl">paper travelers needed</div>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-top: 48px;">live wip board</div>
+  <div class="wip-container">
+    <div class="wip-topbar">
+      <div class="wip-dot" style="background:#ef4444;"></div>
+      <div class="wip-dot" style="background:#f59e0b;"></div>
+      <div class="wip-dot" style="background:#22c55e;"></div>
+      <span class="wip-title">MACHINING PROGRESS — WIP</span>
+    </div>
+    <div class="wip-scroll">
+      <table class="wip">
+        <thead>
+          <tr>
+            <th>Pending</th>
+            <th>Milling</th>
+            <th class="hl">Grinding</th>
+            <th>R04</th>
+            <th>Lathe</th>
+            <th>Levin</th>
+            <th>EWAG</th>
+            <th>NC</th>
+            <th>QC & Assy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="pill pill-pending">WSR-041</span></td>
+            <td><span class="pill pill-active">WSR-038</span></td>
+            <td><span class="pill pill-waiting">WSR-035</span></td>
+            <td></td>
+            <td><span class="pill pill-active">WSR-029</span></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><span class="pill pill-done">WSR-021</span></td>
+          </tr>
+          <tr>
+            <td><span class="pill pill-pending">WSR-042</span></td>
+            <td></td>
+            <td><span class="pill pill-active">WSR-036</span></td>
+            <td></td>
+            <td></td>
+            <td><span class="pill pill-waiting">WSR-031</span></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><span class="pill pill-pending">WSR-043</span></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="wip-legend">
+      <span class="leg-item"><span class="leg-dot" style="background:#1a2234; border: 1px solid #1e293b;"></span>Pending</span>
+      <span class="leg-item"><span class="leg-dot" style="background:#1a1840; border: 1px solid rgba(79,70,229,0.5);"></span>In progress</span>
+      <span class="leg-item"><span class="leg-dot" style="background:#291700; border: 1px solid rgba(217,119,6,0.5);"></span>Waiting for operator</span>
+      <span class="leg-item"><span class="leg-dot" style="background:#051209; border: 1px solid rgba(34,197,94,0.5);"></span>Complete</span>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ── FEATURES ── -->
+<section id="features">
+  <div class="section-label">core features</div>
+  <h2>What it does</h2>
+  <p class="section-intro">Six major capabilities, each designed around how the shop floor actually works.</p>
+
+  <div class="feature-grid">
+    <div class="feat">
+      <div class="feat-icon" style="background: rgba(99,102,241,0.15);">🔍</div>
+      <h3>QR-driven routing</h3>
+      <p>Scan once to start, scan again to end. The system detects whether it's a start or end scan automatically — no mode-switching, no buttons to remember.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background: rgba(34,197,94,0.12);">📊</div>
+      <h3>Live WIP board</h3>
+      <p>Every active job is slotted into the column for its current process. Amber = waiting for operator pickup. Refreshes on every scan submission.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background: rgba(245,158,11,0.12);">📈</div>
+      <h3>Stats & drill-down</h3>
+      <p>Sidebar shows Completed / In-Progress / Idle per station. Filter by Today, This Week, Month, or Custom Range. Double-click to see job-level detail.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background: rgba(56,189,248,0.12);">📄</div>
+      <h3>Travel Sheet PDF</h3>
+      <p>Landscape A5 PDF with QR code, process sign-off grid, job info fields, and printed-by metadata. Built with ReportLab, layout mirrors the UI exactly.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background: rgba(244,114,182,0.12);">🔐</div>
+      <h3>Planning module</h3>
+      <p>Password-protected supervisor page for creating new job routings — WSR, drawing, qty, ordered process sequence. Jobs appear in Pending immediately.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background: rgba(168,85,247,0.12);">🕒</div>
+      <h3>History & correction</h3>
+      <p>Double-click any history row to load it into the input panel. Supports corrections to Mc No, PIC, remarks, and timestamps via Submit.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ── SCAN FLOW ── -->
+<section id="flow">
+  <div class="section-label">scan flow</div>
+  <h2>How a job moves through the floor</h2>
+  <p class="section-intro">From planning to completion — the full lifecycle driven by QR scans.</p>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>Supervisor creates job routing</h4>
+        <p>Planning page (password-protected) — WSR, drawing, qty, ordered process sequence written as rows to <code>DATA.xlsx</code> on the shared network drive.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>Job appears in Pending</h4>
+        <p><code>get_wip_status_map()</code> finds no Time Start anywhere for this WSR → job sits in the Pending column of the WIP board.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>Operator scans QR at station</h4>
+        <p><code>get_active_row()</code> finds the lowest-sequence row without Time Start → routes to the correct station page automatically.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-branch">
+    <div class="branch s1">
+      <h5>SCAN #1 — START</h5>
+      <ul>
+        <li>Info panel filled (WSR, Drawing, Process)</li>
+        <li>Operator types Machine No & PIC</li>
+        <li>Submit → writes Time Start to Excel</li>
+        <li>Job moves to station column (amber)</li>
+      </ul>
+    </div>
+    <div class="branch s2">
+      <h5>SCAN #2 — END</h5>
+      <ul>
+        <li>Auto-reads Mc No & PIC from DB row</li>
+        <li>Writes Time End immediately</li>
+        <li>get_next_process() → route to next</li>
+        <li>WIP board refreshes, stats update</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h4>Automatic routing to next station</h4>
+        <p>Next station page opens automatically with the job pre-loaded. Repeat until all sequences complete.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <h4>Job complete — drops from WIP board</h4>
+        <p>All sequences have Time Start + Time End. Job exits the active board. History tables retain full records. PDF travel sheet printable anytime.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ── ARCHITECTURE ── -->
+<section id="arch">
+  <div class="section-label">architecture</div>
+  <h2>How it's built</h2>
+  <p class="section-intro">Deliberate structure — the data layer is completely isolated, and all 8 station pages are generated from a single factory.</p>
+
+  <div class="tree">
+<span class="t-dir">pe-machine-tracking/</span><br>
+│<br>
+├── <span class="t-file">main.py</span>               <span class="t-cmt"># entry point</span><br>
+│<br>
+├── <span class="t-dir">ui/</span><br>
+│   ├── <span class="t-key">ui.py</span>             <span class="t-cmt"># app wiring + shared ui dict</span><br>
+│   ├── <span class="t-key">data_layer.py</span>     <span class="t-cmt"># all excel I/O lives here only</span><br>
+│   ├── <span class="t-key">process_config.py</span>  <span class="t-cmt"># single source of truth: all 8 processes</span><br>
+│   ├── <span class="t-key">process_page.py</span>   <span class="t-cmt"># factory — generates all 8 station pages</span><br>
+│   ├── <span class="t-file">ui_page_0.py</span>      <span class="t-cmt"># main WIP board + stats panel</span><br>
+│   ├── <span class="t-file">ui_page_2.py</span>      <span class="t-cmt"># travel sheet + PDF generation</span><br>
+│   ├── <span class="t-file">ui_page_3.py</span>      <span class="t-cmt"># planning / job creation</span><br>
+│   └── <span class="t-file">ui_page_4.py</span>      <span class="t-cmt"># view-all history</span><br>
+│<br>
+├── <span class="t-dir">assets/</span>   fonts/ icons/<br>
+├── <span class="t-dir">qr_codes/</span>             <span class="t-cmt"># QR image cache (auto-generated)</span><br>
+├── <span class="t-dir">pdf_output/</span>           <span class="t-cmt"># generated travel sheets</span><br>
+└── <span class="t-dir">DATA/</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="t-key">DATA.xlsx</span>         <span class="t-cmt"># live data store on shared network drive</span>
+  </div>
+
+  <div class="section-label" style="margin-top: 48px;">tech stack</div>
+  <div class="tech-grid">
+    <div class="tech">
+      <div class="layer">UI layer</div>
+      <div class="name">PySide6</div>
+      <div class="role">Qt framework for the desktop window, pages, and widgets</div>
+    </div>
+    <div class="tech">
+      <div class="layer">data store</div>
+      <div class="name">openpyxl</div>
+      <div class="role">Read / write the shared Excel workbook on the network drive</div>
+    </div>
+    <div class="tech">
+      <div class="layer">QR scanning</div>
+      <div class="name">OpenCV</div>
+      <div class="role">Camera feed + image file QR decode</div>
+    </div>
+    <div class="tech">
+      <div class="layer">PDF output</div>
+      <div class="name">ReportLab</div>
+      <div class="role">Landscape A5 travel sheets with precise layout</div>
+    </div>
+    <div class="tech">
+      <div class="layer">QR generation</div>
+      <div class="name">qrcode + PIL</div>
+      <div class="role">Generate and cache per-job QR codes</div>
+    </div>
+    <div class="tech">
+      <div class="layer">packaging</div>
+      <div class="name">PyInstaller</div>
+      <div class="role">Single-folder .exe for Windows deployment</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ── CONFIG ── -->
+<section id="config">
+  <div class="section-label">config-driven design</div>
+  <h2>One object, one station</h2>
+  <p class="section-intro">All 8 machining stations share identical UI logic. A single <code>ProcessConfig</code> entry generates a fully-themed, fully-wired page. Adding a new station is a 10-line change.</p>
+
+  <div class="code-block">
+<span class="cls">ProcessConfig</span>(<br>
+&nbsp;&nbsp;<span class="attr">name</span>           = <span class="str">"GRINDING"</span>,<br>
+&nbsp;&nbsp;<span class="attr">page_index</span>     = <span class="num">10</span>,<br>
+&nbsp;&nbsp;<span class="attr">route_key</span>      = <span class="str">"grinding"</span>,     <span class="cmt"># matched against Process column in Excel</span><br>
+<br>
+&nbsp;&nbsp;<span class="attr">col_mc_no</span>       = <span class="str">"Mc No Grinding"</span>,<br>
+&nbsp;&nbsp;<span class="attr">col_pic</span>         = <span class="str">"PIC Grinding"</span>,<br>
+&nbsp;&nbsp;<span class="attr">col_time_start</span>  = <span class="str">"Time Start Grinding"</span>,<br>
+&nbsp;&nbsp;<span class="attr">col_time_end</span>    = <span class="str">"Time End Grinding"</span>,<br>
+&nbsp;&nbsp;<span class="attr">col_remarks</span>     = <span class="str">"Remarks Grinding"</span>,<br>
+<br>
+&nbsp;&nbsp;<span class="attr">tag_prefix</span>      = <span class="str">"GRINDING"</span>,      <span class="cmt"># widget tag namespace</span><br>
+&nbsp;&nbsp;<span class="attr">accent</span>          = <span class="num">(128, 0, 77, 1)</span>,   <span class="cmt"># RGBA theme colour per station</span><br>
+&nbsp;&nbsp;<span class="attr">accent_light</span>    = <span class="num">(231, 141, 190, 0.28)</span>,<br>
+)
+  </div>
+
+  <p style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--faint);">// to add a new process station: add one ProcessConfig to the registry list. zero other file changes.</p>
+</section>
+
+<hr class="divider">
+
+<!-- ── LEARNINGS ── -->
+<section id="learned">
+  <div class="section-label">engineering learnings</div>
+  <h2>What building this taught me</h2>
+  <p class="section-intro">Real problems that don't come up in tutorials, and how I dealt with them.</p>
+
+  <div class="insights">
+    <div class="insight">
+      <div class="ins-dot" style="background: #ef4444;"></div>
+      <div>
+        <h4>Shared-file concurrency</h4>
+        <p>openpyxl's load/save cycle is not atomic. Works fine in this single-writer environment, but multi-writer would need a lock file or migration to SQLite. A deliberate tradeoff for zero-infrastructure deployment on a facility network drive.</p>
+      </div>
+    </div>
+    <div class="insight">
+      <div class="ins-dot" style="background: #6366f1;"></div>
+      <div>
+        <h4>Qt layout in resizable windows</h4>
+        <p>PySide6 geometry management for dynamically-created widgets (QTableWidget inside a custom layout) requires careful cleanup and rebuild on resize. A debounced <code>resizeEvent</code> pattern at 150ms prevents layout thrashing during window drag.</p>
+      </div>
+    </div>
+    <div class="insight">
+      <div class="ins-dot" style="background: #f59e0b;"></div>
+      <div>
+        <h4>Excel as a self-healing schema</h4>
+        <p>Columns are created on first write if missing (<code>_ensure_col</code>), making the schema self-healing. But column order isn't guaranteed across installs. A migration step would be cleaner for a larger team — acceptable tradeoff here for operator simplicity.</p>
+      </div>
+    </div>
+    <div class="insight">
+      <div class="ins-dot" style="background: #22c55e;"></div>
+      <div>
+        <h4>Config-driven UI factories eliminate duplication</h4>
+        <p>The single <code>ProcessConfig → create_process_page_ui()</code> pattern cut roughly 1,000 lines of duplicated code across what would have been 8 near-identical files. Adding a new station went from copy-paste-edit to a 10-line change. The pattern paid for itself on the first extension request.</p>
+      </div>
+    </div>
+    <div class="insight">
+      <div class="ins-dot" style="background: #38bdf8;"></div>
+      <div>
+        <h4>Sequence-aware row targeting</h4>
+        <p>When a WSR has the same process at multiple sequences (e.g. two grinding passes), <code>get_active_row()</code> finds the lowest-sequence row without a Time Start. Without this, a naive match would write to all rows for that process simultaneously, corrupting the data.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Built for a precision machining facility · Johor, Malaysia · 2024</p>
+  <p>Python · PySide6 · openpyxl · OpenCV · ReportLab · PyInstaller</p>
+  <p style="margin-top: 12px;"><a href="https://github.com/yourusername/pe-machine-tracking" style="color: var(--purple); text-decoration: none; font-family: 'JetBrains Mono', monospace; font-size: 11px;">github.com/yourusername/pe-machine-tracking →</a></p>
+</footer>
+
+</body>
+</html>
