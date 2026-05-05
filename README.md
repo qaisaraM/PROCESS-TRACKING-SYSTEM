@@ -1,4 +1,5 @@
-[![Repo](https://img.shields.io/badge/GitHub-View_Project-black?style=for-the-badge&logo=github)](https://github.com/qaisaraM/PROCESS-TRACKING-SYSTEM)
+🔗 [View Source Code](https://github.com/qaisaraM/PROCESS-TRACKING-SYSTEM)  
+🌐 [Live Demo](https://qaisaram.github.io/PROCESS-TRACKING-SYSTEM/)
 
 <div align="center">
 
