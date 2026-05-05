@@ -2,27 +2,28 @@
 
 <br/>
 
-```
+<pre>
 ██████╗ ███████╗    ███╗   ███╗ █████╗  ██████╗██╗  ██╗██╗███╗   ██╗███████╗
 ██╔══██╗██╔════╝    ████╗ ████║██╔══██╗██╔════╝██║  ██║██║████╗  ██║██╔════╝
 ██████╔╝█████╗      ██╔████╔██║███████║██║     ███████║██║██╔██╗ ██║█████╗  
 ██╔═══╝ ██╔══╝      ██║╚██╔╝██║██╔══██║██║     ██╔══██║██║██║╚██╗██║██╔══╝  
 ██║     ███████╗    ██║ ╚═╝ ██║██║  ██║╚██████╗██║  ██║██║██║ ╚████║███████╗
 ╚═╝     ╚══════╝    ╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝╚══════╝
-                        T R A C K I N G   S Y S T E M
-```
+</pre>
+
+### **Tracking System**
 
 <br/>
 
-**A production-grade desktop application for real-time CNC machining shop-floor management**
+**Real-time WIP tracking system for CNC machining shop-floor operations**
 
 <br/>
 
-![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white)
-![PySide6](https://img.shields.io/badge/PySide6-Qt_Framework-41CD52?style=flat-square&logo=qt&logoColor=white)
-![OpenCV](https://img.shields.io/badge/OpenCV-QR_Scanning-5C3EE8?style=flat-square&logo=opencv&logoColor=white)
-![Excel](https://img.shields.io/badge/openpyxl-Live_Data-217346?style=flat-square&logo=microsoftexcel&logoColor=white)
-![ReportLab](https://img.shields.io/badge/ReportLab-PDF_Gen-E34F26?style=flat-square)
+![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square\&logo=python\&logoColor=white)
+![PySide6](https://img.shields.io/badge/PySide6-Qt_Framework-41CD52?style=flat-square\&logo=qt\&logoColor=white)
+![OpenCV](https://img.shields.io/badge/OpenCV-QR_Scanning-5C3EE8?style=flat-square\&logo=opencv\&logoColor=white)
+![Excel](https://img.shields.io/badge/openpyxl-Data_Store-217346?style=flat-square\&logo=microsoft-excel\&logoColor=white)
+![ReportLab](https://img.shields.io/badge/ReportLab-PDF_Generation-E34F26?style=flat-square)
 ![Status](https://img.shields.io/badge/Status-Production-success?style=flat-square)
 
 <br/>
@@ -31,185 +32,244 @@
 
 ---
 
-## What This Is
+## 🧭 Overview
 
-A shop-floor WIP (Work-In-Progress) tracking system built for a precision machining facility. Operators scan QR codes at each machine station — the system automatically timestamps jobs, routes them to the next process, and gives planners a live bird's-eye view of every job on the floor.
+A desktop-based **Work-In-Progress (WIP) tracking system** built for a precision machining shop.
 
-No cloud. No browser. A self-contained desktop app that writes directly to a shared Excel workbook on a network drive.
+Operators scan QR codes at each station, and the system automatically:
 
----
+* Records process start and end time
+* Routes jobs to the next process
+* Updates a live WIP dashboard
 
-## The Problem It Solves
-
-In a CNC machining shop handling dozens of concurrent jobs across 8 process stations (Milling → Grinding → Lathe → EWAG → Levin → NC → R04 → QC), tracking WIP manually means:
-
-- Paper travelers that get lost or misfiled
-- No visibility into bottlenecks until it's too late
-- Supervisors walking the floor to find job status
-- No historical data for capacity planning
-
-This system replaces all of that with a single scan.
+Runs as a **standalone desktop application** connected to a shared Excel file. No cloud or browser required.
 
 ---
 
-## Core Features
+## ⚠️ Problem
 
-### QR-Driven Job Routing
-Operators scan a job's QR code at their station. The system detects whether this is a **start scan** (first touch) or **end scan** (job complete at this station) and acts accordingly — no mode-switching, no buttons to remember.
+In a machining shop handling multiple jobs across several process stages:
 
-```
-SCAN #1  →  Record Time Start, prompt operator for Machine No & PIC
-SCAN #2  →  Auto-read Machine/PIC from DB, write Time End, route to next station
-```
-
-### Live WIP Board
-The main screen shows every active job slotted into the column for its current process. Jobs awaiting operator pickup are highlighted in amber. Planners see the full floor at a glance.
-
-```
-┌─────────┬─────────┬──────────┬──────┬───────┬───────┬──────┬────┬──────────┐
-│ Pending │ Milling │ Grinding │ R04  │ Lathe │ Levin │ EWAG │ NC │ QC & Assy│
-├─────────┼─────────┼──────────┼──────┼───────┼───────┼──────┼────┼──────────┤
-│ WSR-041 │ WSR-038 │ WSR-035  │      │WSR-029│       │      │    │ WSR-021  │
-│ WSR-042 │         │ WSR-036  │      │       │WSR-031│      │    │          │
-│ WSR-043 │         │          │      │       │       │      │    │          │
-└─────────┴─────────┴──────────┴──────┴───────┴───────┴──────┴────┴──────────┘
-                  ░ amber = waiting for operator
-```
-
-### Stats Panel
-Sidebar shows Completed / In-Progress / Idle counts per station, filterable by Today / This Week / This Month / Custom Range. Double-click any station to drill down to job-level detail.
-
-### Travel Sheet PDF
-Generate a landscape A5 PDF travel document per job: QR code, process checklist with sign-off boxes, job info fields, printed-by metadata. Built with ReportLab with precise layout mirroring the UI.
-
-### Planning Module
-Password-protected planning page for supervisors to create new job routings — define WSR number, drawing, quantity, and sequence of machining steps.
+* Paper travel sheets can be lost or delayed
+* No real-time visibility of job status
+* Supervisors need to manually check machines
+* No structured data for performance tracking
 
 ---
 
-## Architecture
+## 💡 Solution
+
+A simple QR-based workflow:
 
 ```
-pe-machine-tracking/
-│
-├── main.py                    # Entry point
-│
-├── ui/
-│   ├── ui.py                  # App wiring — builds all pages, shared `ui` dict
-│   ├── data_layer.py          # All Excel I/O lives here (openpyxl)
-│   ├── process_config.py      # Single source of truth for all 8 processes
-│   ├── process_page.py        # Generic process page factory (used by all 8 stations)
-│   │
-│   ├── ui_page_0.py           # Main WIP board + stats panel
-│   ├── ui_page_2.py           # Travel Sheet + PDF generation
-│   ├── ui_page_3.py           # Planning / job creation
-│   └── ui_page_4.py           # View-all history
-│
-├── assets/
-│   ├── fonts/
-│   └── icons/
-│
-├── qr_codes/                  # QR image cache (auto-generated)
-├── pdf_output/                # Generated travel sheets
-└── DATA/
-    └── DATA.xlsx              # Live data store (shared network drive)
+SCAN → RECORD → UPDATE → NEXT PROCESS
 ```
+
+* First scan → start process
+* Second scan → complete process
+* System handles routing and logging automatically
+
+---
+
+## 🏭 Process Flow
+
+```
+Milling → Grinding → Lathe → EWAG → Levin → NC → R04 → QC
+```
+
+Each WSR moves step-by-step through defined stages.
+
+---
+
+## ⚙️ Core Features
+
+### 🔹 QR-Based Tracking
+
+```
+SCAN #1 → Record Time Start + input Machine & PIC
+SCAN #2 → Record Time End + auto route to next station
+```
+
+* No manual status updates
+* Minimal operator interaction
+
+---
+
+### 🔹 Live WIP Board
+
+* Real-time job tracking across all stations
+* Jobs grouped by current process
+* Waiting jobs clearly visible
+
+```
+Pending | Milling | Grinding | Lathe | ... | QC
+```
+
+---
+
+### 🔹 WIP Status System
+
+| Status         | Description                  |
+| -------------- | ---------------------------- |
+| 🟢 Completed   | Job finished and QC approved |
+| 🟡 In Progress | Currently being processed    |
+| 🔴 Idle        | No recent activity           |
+
+---
+
+### 🔹 Planning Module
+
+* Create new WSR jobs
+* Define process routing
+* Assign job details
+
+---
+
+### 🔹 Travel Sheet (PDF)
+
+* Auto-generated per job
+* Includes QR code and checklist
+* Used as physical tracking document
+
+---
+
+### 🔹 Stats & Monitoring
+
+* Jobs per station
+* Completed / WIP / Idle counts
+* Filter by time range
+* Drill-down into job-level details
+
+---
+
+## 🧠 Performance & Analytics
+
+The system also provides basic production insights:
+
+* Time taken per process stage
+* Total completion time per WSR
+* Idle time between stages
+* PIC performance based on job completion speed
+
+Helps identify:
+
+* Bottlenecks
+* Slow processes
+* Workload distribution
+
+---
+
+## 🖥 UI System
+
+Built using **PySide6 (Qt framework)** with custom UI components.
+
+### Main Screens:
+
+* WIP Dashboard
+* Process tracking view
+* Live scan activity
+* Basic analytics panel
+
+---
+
+## 🏗 System Design
+
+### Architecture
+
+```
+UI (PySide6)
+   ↓
+Data Layer (openpyxl)
+   ↓
+Excel File (shared storage)
+```
+
+---
 
 ### Key Design Decisions
 
-**Single Excel file as database** — The facility already uses Excel for planning. Rather than introducing a separate DB, the app reads/writes directly to `DATA.xlsx` on the shared drive. `data_layer.py` is the only file that touches openpyxl — all pages go through it.
+**Excel as database**
 
-**Config-driven process pages** — All 8 machining stations share identical UI logic. Rather than 8 near-identical files, `process_config.py` defines a `ProcessConfig` dataclass and `process_page.py` is a factory that generates a fully-themed page from any config. Adding a new station is one new entry in the registry.
+* Matches existing workflow
+* No extra infrastructure needed
 
-**Shared `ui` dict as event bus** — Pages communicate through a shared dict (`ui["selected_wsr"]`, `ui["refresh_wip_table"]`, etc.) rather than direct references. This keeps pages decoupled and makes the routing logic easy to follow.
+**Config-driven process system**
 
-**Sequence-aware row targeting** — When a WSR has the same process at multiple sequences (e.g. two grinding passes), the system uses `get_active_row()` to find the lowest-sequence row without a Time Start, rather than writing to all matching rows.
+* All stations defined in one place
+* Easy to extend
+
+**Event-based tracking**
+
+* Every scan is a recorded event
+* State is derived from data
 
 ---
 
-## Data Flow
+## 🔄 Data Flow
 
 ```
-Operator scans QR
-        │
-        ▼
-  decode_qr_from_image()
-  or QInputDialog (handheld scanner)
-        │
-        ▼
-  _resolve_active_process(wsr, drawing)
-  ── walks planned sequences in order
-  ── finds first incomplete step
-        │
-        ├─── First incomplete step has no Time Start?
-        │         → route to station page
-        │           SCAN #1: operator fills Mc No + PIC, clicks Submit
-        │           save_process_data() writes Time Start
-        │
-        └─── Step has Time Start but no Time End?
-                  → SCAN #2: auto-read Mc/PIC, write Time End
-                    get_next_process() → route to next station
-                    refresh WIP table
+Scan QR
+   ↓
+Identify WSR + Process
+   ↓
+Determine Start / End
+   ↓
+Write to Excel
+   ↓
+Update dashboard
 ```
 
 ---
 
-## Process Configuration
+## 🖥 Tech Stack
 
-Every machining process is defined once in `process_config.py`. The entire app — routing, column names, UI theme, Excel headers — derives from this single source of truth.
+| Layer          | Technology              |
+| -------------- | ----------------------- |
+| UI             | PySide6 (Qt) + pyvisual |
+| Data           | openpyxl (Excel)        |
+| QR Scanning    | OpenCV                  |
+| PDF Generation | ReportLab               |
+| QR Code        | qrcode + PIL            |
+| Packaging      | PyInstaller             |
 
-```python
-ProcessConfig(
-    name="GRINDING",
-    page_index=10,
-    route_key="grinding",               # matched against Process column in Excel
-    col_mc_no="Mc No Grinding",         # exact Excel column header
-    col_pic="PIC Grinding",
-    col_time_start="Time Start Grinding",
-    col_time_end="Time End Grinding",
-    col_remarks="Remarks Grinding",
-    tag_prefix="GRINDING",              # widget tag namespace
-    accent=(128, 0, 77, 1),             # RGBA theme colour
-    accent_light=(231, 141, 190, 0.28),
-)
+---
+
+## 📁 Project Structure
+
+```
+ui/                # UI pages and logic
+data_layer.py      # Excel operations
+process_config.py  # Process definitions
+assets/            # Fonts, icons
+qr_codes/          # Generated QR codes
+pdf_output/        # Travel sheet output
+DATA.xlsx          # Main data file
 ```
 
-To add a new process station: add one `ProcessConfig` to the list. No other file changes required.
+---
+
+## 📚 Key Learnings
+
+* Designing systems that integrate with real shop-floor workflows
+* Handling Excel as a shared data source
+* Building event-driven tracking from physical actions
+* Reducing duplicated UI logic with config-based design
+* Managing real-time updates in a desktop application
 
 ---
 
-## Tech Stack
+## 📍 Context
 
-| Layer | Technology | Role |
-|---|---|---|
-| UI Framework | PySide6 (Qt) + pyvisual | Window, pages, widgets |
-| Data Store | openpyxl | Read/write shared Excel workbook |
-| QR Scanning | OpenCV (`cv2`) | Camera feed + image decode |
-| PDF Generation | ReportLab | Landscape A5 travel sheets |
-| QR Creation | qrcode / PIL | Generate job QR codes |
-| Packaging | PyInstaller | Single-folder `.exe` for Windows |
+Built for internal use in a machining workshop environment, focused on improving:
 
----
-
-## Screenshots
-
-> UI screenshots would go here — WIP board, a process station page, the stats drill-down, and a generated PDF travel sheet.
-
----
-
-## What I Learned
-
-Building this highlighted a few things that don't come up in tutorials:
-
-- **Shared-file concurrency** — openpyxl's `load_workbook` / `save` cycle is not atomic. In a single-writer environment this is fine; multi-writer would need a lock file or migration to SQLite.
-- **Qt layout in a resizable window** — PySide6's geometry management for dynamically-created widgets (QTableWidget inside a custom layout) requires careful cleanup and rebuild on resize. The debounced `resizeEvent` pattern here prevents thrashing.
-- **Excel as a schema** — Columns are created on first write if missing (`_ensure_col`), which makes the schema self-healing but means column order isn't guaranteed across installs. A migration step would be cleaner for a larger team.
-- **Config-driven UI factories** — The single `ProcessConfig` → `create_process_page_ui()` pattern cut ~1000 lines of duplicated code and made adding a new station a 10-line change.
+* Production visibility
+* Workflow tracking
+* Communication between teams
 
 ---
 
 <div align="center">
 
-Built for a precision machining facility in Johor, Malaysia · 2024
+**Built for real-world production use · Malaysia · 2024**
 
 </div>
