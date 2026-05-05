@@ -191,26 +191,6 @@ To add a new process station: add one `ProcessConfig` to the list. No other file
 
 ---
 
-## Setup
-
-**Requirements:** Python 3.11+, Windows (tested), network access to shared drive
-
-```bash
-git clone https://github.com/yourusername/pe-machine-tracking
-cd pe-machine-tracking
-pip install -r requirements.txt
-python main.py
-```
-
-**Network path** — The app expects `DATA.xlsx` at:
-```
-~/YOKOWO Group/Communication site - 13 IP/02 Non Disclosure/
-10_PI/10_ImageAnalysis/PE MACHINE TRACKING/NO1/DATA/DATA.xlsx
-```
-Adjust `_get_base_dir()` in `data_layer.py` for your environment. Frozen builds look in `_internal/DATA/` next to the executable.
-
----
-
 ## Screenshots
 
 > UI screenshots would go here — WIP board, a process station page, the stats drill-down, and a generated PDF travel sheet.
