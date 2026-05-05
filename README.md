@@ -270,6 +270,6 @@ Built for internal use in a machining workshop environment, focused on improving
 
 <div align="center">
 
-**Built for real-world production use · Malaysia · 2024**
+**Built for real-world production use · QaisaraM · 2026**
 
 </div>
