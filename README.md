@@ -12,7 +12,7 @@
 
 ## 🧭 Overview
 
-This system is used to track manufacturing work processes using a **Travel Sheet linked with WSR (Work Service Request)**.
+This system is used to track manufacturing work processes using a **Travel Sheet linked with WSR (WorkShop Request)**.
 
 It helps monitor job progress across multiple production stages, from planning until QC completion, using QR scanning at each process station.
 
