@@ -192,15 +192,7 @@ PROCESS-TRACKING-SYSTEM/
 
 ### Data Flow
 
-```
-QR Scan (OpenCV)
-      ↓
-event_processor.py  ←  process_config.py (routing rules)
-      ↓
-data_layer.py  →  DATA.xlsx (write event)
-      ↓
-UI refresh  →  dashboard.py (read + render)
-```
+![End-to-End Pipeline](https://github.com/https://github.com/qaisaraM/PROCESS-TRACKING-SYSTEM/blob/main/docs/data_flow.png)
 
 ### Technology Stack
 
