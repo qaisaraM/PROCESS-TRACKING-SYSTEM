@@ -61,31 +61,7 @@ In a precision machining shop handling multiple concurrent jobs across sequentia
 The system replaces paper travel sheets with a **two-scan digital workflow**: one scan starts a process stage, a second scan ends it. Everything else — routing, timestamps, dashboard updates, data logging — is handled automatically.
 
 ```
-┌──────────────────────────────────────────┐
-│            Physical QR Code              │
-│         (printed on travel sheet)        │
-└──────────────────┬───────────────────────┘
-                   │  operator scans
-                   ▼
-┌──────────────────────────────────────────┐
-│           OpenCV QR Scanner              │
-│      Decode WSR ID + process context     │
-└──────────────────┬───────────────────────┘
-                   │
-                   ▼
-┌──────────────────────────────────────────┐
-│           Event Processor                │
-│   Determine: Start or End event?         │
-│   Record: timestamp, machine, PIC        │
-│   Route:  job to next process stage      │
-└──────────┬───────────────────┬───────────┘
-           │                   │
-           ▼                   ▼
-┌──────────────────┐  ┌─────────────────────┐
-│   Excel Data     │  │    WIP Dashboard     │
-│   (openpyxl)     │  │    (PySide6 UI)      │
-│   Audit trail    │  │    Live job status   │
-└──────────────────┘  └─────────────────────┘
+![End-to-End Pipeline](https://raw.githubusercontent.com/qaisaraM/PROCESS-TRACKING-SYSTEM/blob/main/docs/process_diagram.png)
 ```
 
 **Key architectural decision:** Excel as the data store — not a traditional database. This matches the existing tool ecosystem on the shop floor, requires no additional infrastructure, and allows supervisors to open and inspect data directly without any special software.
