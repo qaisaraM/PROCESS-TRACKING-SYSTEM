@@ -192,7 +192,7 @@ PROCESS-TRACKING-SYSTEM/
 
 ### Data Flow
 
-![End-to-End Pipeline](https://github.com/https://github.com/qaisaraM/PROCESS-TRACKING-SYSTEM/blob/main/docs/data_flow.png)
+![End-to-End Pipeline](https://github.com/qaisaraM/PROCESS-TRACKING-SYSTEM/blob/main/docs/data_flow.png)
 
 ### Technology Stack
 
